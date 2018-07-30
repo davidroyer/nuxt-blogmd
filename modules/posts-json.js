@@ -5,17 +5,13 @@ const writeFile = promisify(fs.writeFile)
 const readFile = promisify(fs.readFile)
 
 module.exports = posts => {
-  // console.log('posts from posts-json', posts)
   const data = posts.map(({ name, matter }) => ({
     name,
-    title: matter.attributes.title,
+    title: matter.attributes.title || titleize(name),
     tags: matter.attributes.tags,
-    date: matter.attributes.date.toLocaleDateString('zh-Hans-CN', {
-      timeZone: 'UTC',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }),
+    date: matter.attributes.date
+      ? matter.attributes.date.toLocaleDateString()
+      : '',
     content: md.render(matter.body)
   }))
 
@@ -31,4 +27,11 @@ async function generateJSONFile(postObject) {
     `./static/data/${postObject.name}.json`,
     JSON.stringify(postObject)
   )
+}
+
+function titleize(slug) {
+  const words = slug.split('-')
+  return words
+    .map(word => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
+    .join(' ')
 }

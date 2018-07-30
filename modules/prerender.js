@@ -44,44 +44,21 @@ mkdir('./static')
 ejs.cache = lru(100)
 const template = fs.readFileSync('./scaffolds/post.vue', 'utf-8')
 
-async function generateFile({ name, matter }) {
-  const sfc = ejs.render(template, {
-    name,
-    title: matter.attributes.title,
-    date: matter.attributes.date.toLocaleString('zh-Hans-CN', {
-      timeZone: 'UTC',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    }),
-    tags: matter.attributes.tags,
-    content: md.render(matter.body)
-  })
-  await writeFile(`${DEST_DIR}/${name}.vue`, sfc)
-}
-
 chokidar.watch(`${SOURCE_DIR}/*.md`).on('all', async (event, filePath) => {
   if (event === 'add' || event === 'change') {
     const content = await readFile(filePath, 'utf-8')
     const posts = await getPosts() // eslint-disable-line vue/script-indent
     generatePostsData(posts)
-    await generateFile({
-      name: path.basename(filePath, '.md'),
-      matter: fm(content)
-    })
   }
 })
 
 module.exports = function () {
   this.nuxt.hook('ready', async () => {
     const posts = await getPosts() // eslint-disable-line vue/script-indent
-    posts.sort(
-      (a, b) => b.matter.attributes.date.valueOf() - a.matter.attributes.date.valueOf()
-    )
-    Promise.all(posts.map(generateFile))
+    // posts.sort(
+    //   (a, b) => b.matter.attributes.date.valueOf() - a.matter.attributes.date.valueOf()
+    // )
+    // Promise.all(posts.map(generateFile))
     generatePostsData(posts)
     generateRss(posts)
   })
