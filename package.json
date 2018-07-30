@@ -1,6 +1,13 @@
 {
   "name": "blog",
-  "licenses": [{ "type": "MIT" }, { "type": "CC BY-SA 4.0" }],
+  "licenses": [
+    {
+      "type": "MIT"
+    },
+    {
+      "type": "CC BY-SA 4.0"
+    }
+  ],
   "private": true,
   "scripts": {
     "dev": "nuxt",

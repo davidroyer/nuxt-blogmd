@@ -24,7 +24,6 @@
         <a @click="nextPage">Next »</a>
       </li>
     </ul>
-
     <footer-bar />
   </div>
 </template>
@@ -44,7 +43,8 @@ export default {
   data() {
     return {
       posts: [],
-      currentPage: 1
+      currentPage: 1,
+      content: 'hi'
     }
   },
   computed: {
