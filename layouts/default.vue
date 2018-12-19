@@ -1,6 +1,7 @@
 <template>
   <div class="site-wrapper">
     <nav>
+      <nuxt-link to="/">Home</nuxt-link>
       <nuxt-link to="/posts">Posts Test Page</nuxt-link>
     </nav>
     <nuxt/>

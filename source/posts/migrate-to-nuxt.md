@@ -1,6 +1,6 @@
 ---
 title: 再见 Hexo，你好 Nuxt.js
-date: 2018-05-10 17:30:53
+date: 2016-05-10 17:30:53
 tags:
   - blog
   - tag-example1

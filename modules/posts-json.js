@@ -14,7 +14,7 @@ module.exports = posts => {
       : '',
     content: md.render(matter.body)
   }))
-
+  
   Promise.all(data.map(generateJSONFile))
   return promisify(fs.writeFile)(
     './static/data/posts.json',
@@ -22,7 +22,7 @@ module.exports = posts => {
   )
 }
 
-async function generateJSONFile(postObject) {
+function generateJSONFile(postObject) {
   return promisify(fs.writeFile)(
     `./static/data/${postObject.name}.json`,
     JSON.stringify(postObject)
@@ -35,3 +35,4 @@ function titleize(slug) {
     .map(word => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
     .join(' ')
 }
+

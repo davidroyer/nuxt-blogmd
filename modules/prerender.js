@@ -9,8 +9,8 @@ const md = require('./markdown')
 const generatePostsData = require('./posts-json')
 const generateRss = require('./rss')
 
-const SOURCE_DIR = './source/posts'
-const DEST_DIR = './pages/p'
+const SOURCE_DIR = './source/posts';
+const DEST_DIR = './pages/p';
 
 const writeFile = promisify(fs.writeFile)
 const readFile = promisify(fs.readFile)
@@ -48,18 +48,22 @@ chokidar.watch(`${SOURCE_DIR}/*.md`).on('all', async (event, filePath) => {
   if (event === 'add' || event === 'change') {
     const content = await readFile(filePath, 'utf-8')
     const posts = await getPosts() // eslint-disable-line vue/script-indent
+    orderByDate(posts)
     generatePostsData(posts)
   }
 })
 
 module.exports = function () {
   this.nuxt.hook('ready', async () => {
-    const posts = await getPosts() // eslint-disable-line vue/script-indent
-    // posts.sort(
-    //   (a, b) => b.matter.attributes.date.valueOf() - a.matter.attributes.date.valueOf()
-    // )
-    // Promise.all(posts.map(generateFile))
+    const posts = await getPosts()
+    orderByDate(posts)
     generatePostsData(posts)
     generateRss(posts)
   })
+};
+
+function orderByDate(posts) {
+  return posts.sort(
+    (a, b) => b.matter.attributes.date.valueOf() - a.matter.attributes.date.valueOf()
+  )  
 }

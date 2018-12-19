@@ -1,6 +1,6 @@
 ---
 title: Post 4
-date: 2018-07-30
+date: 2018-12-10
 tags:
   - tag-example1
   - tag-example2
@@ -11,3 +11,11 @@ tags:
 ```js
 var a = 'new'
 ```
+
+new
+
+## I wonder what will happen here as I add
+
+::: tip
+Something Special
+:::

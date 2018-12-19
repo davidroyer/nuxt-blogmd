@@ -13,8 +13,7 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "generate": "nuxt generate",
-    "serve": "http-server dist",
-    "lint": "eslint . -f=beauty --ext .vue,.js"
+    "serve": "http-server dist"
   },
   "dependencies": {
     "animate.css": "^3.6.1",
