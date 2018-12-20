@@ -23,6 +23,7 @@ module.exports = posts => {
 }
 
 function generateJSONFile(postObject) {
+  console.log('postObject', postObject)
   return promisify(fs.writeFile)(
     `./static/data/${postObject.name}.json`,
     JSON.stringify(postObject)

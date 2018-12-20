@@ -18,7 +18,10 @@
   "dependencies": {
     "animate.css": "^3.6.1",
     "feather-icons": "^4.7.0",
+    "fs-jetpack": "^2.2.0",
     "highlight.js": "^9.12.0",
+    "readdirp": "^2.2.1",
+    "recursive-readdir": "^2.2.2",
     "vue-disqus": "^3.0.3"
   },
   "devDependencies": {
