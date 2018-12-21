@@ -30,6 +30,7 @@ module.exports = (data, itemType) => {
   )
 }
 
+
 function generateJSONFile(itemData, itemType) {
   return jetpack.write(`./static/data/${itemType}/${itemData.name}.json`, itemData);
 }

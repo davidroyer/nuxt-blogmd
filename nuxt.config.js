@@ -35,15 +35,15 @@ module.exports = {
       }
     ]
   },
-  generate: {
-    routes(callback) {
-      const posts = require('./static/data/posts.json')
-      const postRoutes = posts.map(post => `/posts/${post.name}`)
-      const tagRoutes = getTagRoutes(posts).map(tag => `/tag/${tag}`)
-      const Routes = [...postRoutes, ...tagRoutes]
-      callback(null, Routes)
-    }
-  },
+  // generate: {
+  //   routes(callback) {
+  //     const posts = require('./static/data/posts.json')
+  //     const postRoutes = posts.map(post => `/posts/${post.name}`)
+  //     const tagRoutes = getTagRoutes(posts).map(tag => `/tag/${tag}`)
+  //     const Routes = [...postRoutes, ...tagRoutes]
+  //     callback(null, Routes)
+  //   }
+  // },
   loading: {
     color: '#63BB0A'
   },

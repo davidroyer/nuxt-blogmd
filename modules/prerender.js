@@ -106,13 +106,23 @@ module.exports = function () {
   })
 
   this.nuxt.hook('ready', async () => {
-    // const posts = await getPosts()
     const posts = await getCollection('posts')
     const projects = await getCollection('projects')
     orderByDate(posts)
     generateCollectionApi(posts, 'posts')
     generateCollectionApi(projects, 'projects')
     generateRss(posts)
+  })
+
+
+  this.nuxt.hook('generate:extendRoutes', async routes => {
+    const collectionsRoutes = await generateRoutes()
+
+    for (let route of collectionsRoutes) {
+      routes.push({ route });
+    }
+    // routes.push(...collectionsRoutes)
+    // return collectionsRoutes
   })
 };
 
@@ -135,3 +145,35 @@ function orderByDate(posts) {
     (a, b) => b.matter.attributes.date.valueOf() - a.matter.attributes.date.valueOf()
   )
 }
+
+async function generateRoutes(routes) {
+  const routesArray = []
+  const collectionTypes = getCollectionTypes()
+  console.log('generateRoutes - collectionTypes:', collectionTypes)
+  for (const collection of collectionTypes) {
+    
+    const collectionData = await getCollection(collection)
+    const collectionApi = generateCollectionApiTest(collectionData, collection)
+    const collectionRoutes = collectionApi.map(collectionItem => `/${collection}/${collectionItem.slug}`)
+    routesArray.push(...collectionRoutes)
+  }
+  console.log('routesArray: ', routesArray)
+  return routesArray
+}
+
+
+function generateCollectionApiTest(data, itemType) {
+  const itemsData = data.map(({ name, matter }) => ({
+    name,
+    slug: name,
+    title: matter.attributes.title || titleize(name),
+    tags: matter.attributes.tags,
+    date: matter.attributes.date
+      ? matter.attributes.date.toLocaleDateString()
+      : '',
+    content: md.render(matter.body)
+  }))
+  return itemsData
+}
+
+
