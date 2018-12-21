@@ -1,14 +1,11 @@
-const {
-  promisify
-} = require('util')
-const fs = require('fs')
 const path = require('path')
 const chokidar = require('chokidar')
 const fm = require('front-matter')
 const md = require('./markdown')
-
-const generateRss = require('./rss')
 const jetpack = require('fs-jetpack');
+// const generateRss = require('./rss')
+
+
 const SOURCE_DIR = './_CONTENT';
 
 function getCollectionTypes() {
@@ -56,7 +53,7 @@ module.exports = function () {
     orderByDate(posts)
     generateApiFiles(posts, 'posts')
     generateApiFiles(projects, 'projects')
-    generateRss(posts)
+    // generateRss(posts)
   })
 
 

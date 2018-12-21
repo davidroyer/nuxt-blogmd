@@ -1,5 +1,5 @@
 ---
-title: Project 1g
+title: Project 1i
 date: 2018-12-10
 tags:
   - nuxt
