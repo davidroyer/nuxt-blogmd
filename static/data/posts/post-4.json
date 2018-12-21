@@ -1,0 +1,11 @@
+{
+  "name": "post-4",
+  "slug": "post-4",
+  "title": "Post 412321",
+  "tags": [
+    "tag-example1",
+    "tag-example2"
+  ],
+  "date": "12/9/2018",
+  "content": "<h2 id=\"this-will-be-post-4\"><a class=\"header-anchor\" href=\"#this-will-be-post-4\" aria-hidden=\"true\">#</a> This will be post 4</h2>\n<pre><code class=\"language-js\"><div class=\"hljs\"><span class=\"hljs-keyword\">var</span> a = <span class=\"hljs-string\">'new'</span>\n</div></code></pre>\n<p>new</p>\n<h2 id=\"i-wonder-what-will-happen-here-as-i-add\"><a class=\"header-anchor\" href=\"#i-wonder-what-will-happen-here-as-i-add\" aria-hidden=\"true\">#</a> I wonder what will happen here as I add</h2>\n<h3>Heading Level 3</h3>\n<h4>Heading Level 4</h4>\n"
+}

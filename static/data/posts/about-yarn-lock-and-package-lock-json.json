@@ -1,0 +1,10 @@
+{
+  "name": "about-yarn-lock-and-package-lock-json",
+  "slug": "about-yarn-lock-and-package-lock-json",
+  "title": "About yarn.lock & package-lock.json",
+  "tags": [
+    "javaScript"
+  ],
+  "date": "6/22/2018",
+  "content": "<h1 id=\"what-is-a-lock\"><a class=\"header-anchor\" href=\"#what-is-a-lock\" aria-hidden=\"true\">#</a> What is a lock?</h1>\n<p>Yarn uses its own design format, which is a bit like YAML (the standard YAML will be used in Yarn 2.0). The line at the beginning of <code>#</code> is a comment.</p>\n<h2 id=\"lockfile-version\"><a class=\"header-anchor\" href=\"#lockfile-version\" aria-hidden=\"true\">#</a> lockfile version</h2>\n<p>The second line of each <code>yarn.lock</code> is <code># yarn lockfile v1</code>. This indicates the first version of the lockfile. The record version is for the purpose of updating the syntax or semantics of the lockfile in the future. Once the lockfile is updated in the future, the version number is added, and Yarn can make different actions according to different versions, thus ensuring backward compatibility.</p>\n<h2 id=\"field-interpretation\"><a class=\"header-anchor\" href=\"#field-interpretation\" aria-hidden=\"true\">#</a> Field Interpretation</h2>\n<p>All package information is listed under the <code>yarn.lock</code> file and sorted alphabetically. I just find a bag for explanation. E.g:</p>\n<pre><code class=\"language-yaml\"><div class=\"hljs\"><span class=\"hljs-string\">Boom@5.x.x:</span>\n  <span class=\"hljs-string\">Version</span> <span class=\"hljs-string\">\"5.2.0\"</span>\n  <span class=\"hljs-string\">Responsible</span> <span class=\"hljs-string\">\"https://registry.yarnpkg.com/boom/-/boom-5.2.0.tgz#5dd9da6ee3a5f302077436290cb717d3f4a54e02\"</span>\n<span class=\"hljs-attr\">  Dependencies:</span>\n    <span class=\"hljs-string\">Hoek</span> <span class=\"hljs-string\">\"4.x.x\"</span>\n</div></code></pre>\n"
+}

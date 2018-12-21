@@ -11,7 +11,7 @@ const lru = require('lru-cache')
 const fm = require('front-matter')
 const ejs = require('ejs')
 const md = require('./markdown')
-const generatePostsData = require('./posts-json')
+const generateCollectionApi = require('./posts-json')
 const generateRss = require('./rss')
 var recursive = require("recursive-readdir");
 const jetpack = require('fs-jetpack');
@@ -59,14 +59,12 @@ getCollectionTypes().forEach(type => {
 });
 
 
-function getCollections() {
-
-}
+function getCollections() {}
 
 async function getCollection(type) {
+  let collectionFiles = getAllMarkdownFiles(type)
   return Promise.all(
-    getAllMarkdownFiles(type)
-    .map(async fileName => {
+    collectionFiles.map(async fileName => {
       const content = await readFile(path.join(SOURCE_DIR, type, fileName), 'utf-8')
       return parseMarkdown(fileName, content)
     })
@@ -89,7 +87,6 @@ function getPosts() {
   )
 }
 
-mkdir(DEST_DIR)
 mkdir('./static')
 
 ejs.cache = lru(100)
@@ -101,9 +98,10 @@ module.exports = function () {
 
   chokidar.watch(`${SOURCE_DIR}/**/*.md`).on('all', async (event, filePath) => {
     if (event === 'add' || event === 'change') {
-      const posts = await getPosts('posts')
-      orderByDate(posts)
-      generatePostsData(posts)
+      let collectionType = path.basename(path.dirname(filePath))
+      let collectionData = await getCollection(collectionType)
+      generateCollectionApi(collectionData, collectionType)
+      console.log('Updating Collection Type: ', collectionType)
     }
   })
 
@@ -111,9 +109,9 @@ module.exports = function () {
     // const posts = await getPosts()
     const posts = await getCollection('posts')
     const projects = await getCollection('projects')
-    console.log('PROJECTS WORK@@@!!!: ', projects)
     orderByDate(posts)
-    generatePostsData(posts)
+    generateCollectionApi(posts, 'posts')
+    generateCollectionApi(projects, 'projects')
     generateRss(posts)
   })
 };

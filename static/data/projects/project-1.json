@@ -1,0 +1,11 @@
+{
+  "name": "project-1",
+  "slug": "project-1",
+  "title": "Project 1d",
+  "tags": [
+    "nuxt",
+    "firebase"
+  ],
+  "date": "12/9/2018",
+  "content": "<h1 id=\"heading-level-1\"><a class=\"header-anchor\" href=\"#heading-level-1\" aria-hidden=\"true\">#</a> Heading level 1</h1>\n<ul>\n<li>item 1</li>\n<li>item 2</li>\n</ul>\n<blockquote>\n<p>Blockquotes</p>\n</blockquote>\n<ol>\n<li>do this</li>\n<li>then this</li>\n<li>then that</li>\n</ol>\n"
+}

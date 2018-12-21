@@ -8,12 +8,19 @@
 <script>
 // let postAlternate = require(`@/static/data/${params.slug}.json`)
 export default {
-  asyncData({ store, params, payload }) {
-    if (payload) {
-      return { post: payload }
-    } else {
-      return { post: store.state.posts.find(post => post.name === params.slug) }
+
+  asyncData ({ route, params }) {
+    return {
+      post: require(`@/static/data/posts/${params.slug}.json`)
     }
   }
+
+  // asyncData({ store, params, payload }) {
+  //   if (payload) {
+  //     return { post: payload }
+  //   } else {
+  //     return { post: store.state.posts.find(post => post.name === params.slug) }
+  //   }
+  // }
 }
 </script>

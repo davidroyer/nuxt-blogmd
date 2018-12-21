@@ -3,10 +3,13 @@ const md = require('./markdown')
 const fs = require('fs')
 const writeFile = promisify(fs.writeFile)
 const readFile = promisify(fs.readFile)
+const jetpack = require('fs-jetpack')
 
-module.exports = posts => {
-  const data = posts.map(({ name, matter }) => ({
+
+module.exports = (data, itemType) => {
+  const itemsData = data.map(({ name, matter }) => ({
     name,
+    slug: name,
     title: matter.attributes.title || titleize(name),
     tags: matter.attributes.tags,
     date: matter.attributes.date
@@ -15,19 +18,20 @@ module.exports = posts => {
     content: md.render(matter.body)
   }))
   
-  Promise.all(data.map(generateJSONFile))
+  Promise.all(itemsData.map(
+    function(itemData) { return generateJSONFile(itemData, itemType); }
+  ));
+
+
+  // Promise.all(itemsData.map(generateJSONFile))
   return promisify(fs.writeFile)(
-    './static/data/posts.json',
-    JSON.stringify(data)
+    `./static/data/${itemType}.json`,
+    JSON.stringify(itemsData)
   )
 }
 
-function generateJSONFile(postObject) {
-  console.log('postObject', postObject)
-  return promisify(fs.writeFile)(
-    `./static/data/${postObject.name}.json`,
-    JSON.stringify(postObject)
-  )
+function generateJSONFile(itemData, itemType) {
+  return jetpack.write(`./static/data/${itemType}/${itemData.name}.json`, itemData);
 }
 
 function titleize(slug) {
