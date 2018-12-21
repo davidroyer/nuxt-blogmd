@@ -1,10 +1,10 @@
 {
   "name": "post-6",
   "slug": "post-6",
-  "title": "Post 6",
+  "title": "Post 6d",
   "tags": [
     "bug"
   ],
   "date": "7/29/2018",
-  "content": "<h2 id=\"this-is-post-6\"><a class=\"header-anchor\" href=\"#this-is-post-6\" aria-hidden=\"true\">#</a> This is post 6.</h2>\n<p><strong><em>It didn’t work when it had no tags</em></strong></p>\n<pre><code class=\"language-js\"><div class=\"hljs\"><span class=\"hljs-keyword\">var</span> a = <span class=\"hljs-string\">'new'</span>\n</div></code></pre>\n<p>hi</p>\n"
+  "content": "<h2 id=\"this-is-post-6\"><a class=\"header-anchor\" href=\"#this-is-post-6\" aria-hidden=\"true\">#</a> This is post 6.</h2>\n<p><strong><em>It didn’t work when it had no tags</em></strong></p>\n<pre><code class=\"language-js\"><div class=\"hljs\"><span class=\"hljs-keyword\">var</span> a = <span class=\"hljs-string\">'new'</span>\n</div></code></pre>\n<blockquote>\n<p>Beautiful Blockquote</p>\n</blockquote>\n"
 }

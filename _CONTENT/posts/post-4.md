@@ -1,5 +1,5 @@
 ---
-title: Post 412321
+title: Post FROM _CONTENT
 date: 2018-12-10
 tags:
   - tag-example1

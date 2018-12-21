@@ -1,5 +1,5 @@
 ---
-title: Post 6
+title: Post 6d
 date: 2018-07-30
 tags:
   - bug
@@ -13,4 +13,4 @@ tags:
 var a = 'new'
 ```
 
-hi
+> Beautiful Blockquote

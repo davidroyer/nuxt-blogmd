@@ -1,60 +1,28 @@
 const {
   promisify
 } = require('util')
-const {
-  getMarkdownFiles
-} = require('./utils')
 const fs = require('fs')
 const path = require('path')
 const chokidar = require('chokidar')
-const lru = require('lru-cache')
 const fm = require('front-matter')
-const ejs = require('ejs')
 const md = require('./markdown')
-const generateCollectionApi = require('./posts-json')
+
 const generateRss = require('./rss')
-var recursive = require("recursive-readdir");
 const jetpack = require('fs-jetpack');
-
-const SOURCE_DIR = './source';
-const DEST_DIR = './pages/p';
-
-const writeFile = promisify(fs.writeFile)
-const readFile = promisify(fs.readFile)
-const readDirectory = promisify(fs.readdir)
-
-function mkdir(dir) {
-  try {
-    fs.statSync(dir)
-  } catch (error) {
-    fs.mkdirSync(dir)
-  }
-}
-
-async function getAllCollections() {
-  const allCollections = await recursive(SOURCE_DIR)
-  console.log('ALL COLLECTIONS: ', allCollections)
-  return allCollections
-}
-getAllCollections()
+const SOURCE_DIR = './_CONTENT';
 
 function getCollectionTypes() {
-  let result = jetpack.list(SOURCE_DIR).filter(item => !(/(^|\/)\.[^\/\.]/g).test(item));
-  console.log('result: ', result)
-  return result
+  return jetpack.list(SOURCE_DIR).filter(item => !(/(^|\/)\.[^\/\.]/g).test(item));
 }
 
 function getAllMarkdownFiles(directory) {
   const contentDir = jetpack.cwd(`${SOURCE_DIR}/${directory}`);
-  const allMdFiles = contentDir.find({
+  return contentDir.find({
     matching: ['*.md']
   });
-  console.log('allMdFiles: ', allMdFiles)
-  return allMdFiles
 }
 
 getCollectionTypes().forEach(type => {
-  console.log('TYPE: ', type)
   getCollection(type)
 });
 
@@ -65,34 +33,11 @@ async function getCollection(type) {
   let collectionFiles = getAllMarkdownFiles(type)
   return Promise.all(
     collectionFiles.map(async fileName => {
-      const content = await readFile(path.join(SOURCE_DIR, type, fileName), 'utf-8')
+      const content = await jetpack.readAsync(path.join(SOURCE_DIR, type, fileName));
       return parseMarkdown(fileName, content)
     })
   )
 }
-
-
-function getPosts() {
-
-  return Promise.all(
-    fs
-    .readdirSync(path.join(SOURCE_DIR, 'posts'))
-    .filter(name => name.endsWith('.md'))
-    .map(async name => {
-
-      console.log('name from getPosts():  ', name)
-      const content = await readFile(path.join(SOURCE_DIR, 'posts', name), 'utf-8')
-      return parseMarkdown(name, content)
-    })
-  )
-}
-
-mkdir('./static')
-
-ejs.cache = lru(100)
-const template = fs.readFileSync('./scaffolds/post.vue', 'utf-8')
-
-
 
 module.exports = function () {
 
@@ -100,7 +45,7 @@ module.exports = function () {
     if (event === 'add' || event === 'change') {
       let collectionType = path.basename(path.dirname(filePath))
       let collectionData = await getCollection(collectionType)
-      generateCollectionApi(collectionData, collectionType)
+      generateApiFiles(collectionData, collectionType)
       console.log('Updating Collection Type: ', collectionType)
     }
   })
@@ -109,20 +54,19 @@ module.exports = function () {
     const posts = await getCollection('posts')
     const projects = await getCollection('projects')
     orderByDate(posts)
-    generateCollectionApi(posts, 'posts')
-    generateCollectionApi(projects, 'projects')
+    generateApiFiles(posts, 'posts')
+    generateApiFiles(projects, 'projects')
     generateRss(posts)
   })
 
 
   this.nuxt.hook('generate:extendRoutes', async routes => {
-    const collectionsRoutes = await generateRoutes()
-
-    for (let route of collectionsRoutes) {
-      routes.push({ route });
+    const collectionRoutes = await generateRoutes()
+    for (let route of collectionRoutes) {
+      routes.push({
+        route
+      });
     }
-    // routes.push(...collectionsRoutes)
-    // return collectionsRoutes
   })
 };
 
@@ -136,7 +80,7 @@ function parseMarkdown(name, content) {
 
 async function processCollectionItem(type, filePath) {
   const name = path.basename(filePath, '.md')
-  const content = await readFile(filePath, 'utf-8')
+  const content = await jetpack.readAsync(filePath);
   return parseMarkdown(name, content)
 }
 
@@ -146,34 +90,88 @@ function orderByDate(posts) {
   )
 }
 
+/**
+ * Helper function for generate hook
+ * @param {Array} routes 
+ */
 async function generateRoutes(routes) {
   const routesArray = []
   const collectionTypes = getCollectionTypes()
-  console.log('generateRoutes - collectionTypes:', collectionTypes)
+
   for (const collection of collectionTypes) {
-    
     const collectionData = await getCollection(collection)
-    const collectionApi = generateCollectionApiTest(collectionData, collection)
+    const collectionApi = generateCollectionApi(collectionData, collection)
     const collectionRoutes = collectionApi.map(collectionItem => `/${collection}/${collectionItem.slug}`)
     routesArray.push(...collectionRoutes)
   }
-  console.log('routesArray: ', routesArray)
   return routesArray
 }
 
 
-function generateCollectionApiTest(data, itemType) {
-  const itemsData = data.map(({ name, matter }) => ({
+/**
+ * Generates Schema for `JSON` files
+ * @param {Object} data Data for all entries of a single collection
+ * @param {String} itemType The collection type
+ */
+function generateCollectionApi(data, itemType) {
+  const itemsData = data.map(({
+    name,
+    matter
+  }) => ({
     name,
     slug: name,
     title: matter.attributes.title || titleize(name),
     tags: matter.attributes.tags,
-    date: matter.attributes.date
-      ? matter.attributes.date.toLocaleDateString()
-      : '',
+    date: matter.attributes.date ?
+      matter.attributes.date.toLocaleDateString() :
+      '',
     content: md.render(matter.body)
   }))
   return itemsData
 }
 
+/**
+ * Create the `JSON` files for a collection
+ * 1. Get the data of all entries
+ * 2. Generate a `JSON` file for each entry
+ * 3. Generate one that includes all entries
+ * @param {Object} data 
+ * @param {String} itemType 
+ */
+function generateApiFiles(data, collectionType) {
+  const collectionItemsData = generateCollectionApi(data, collectionType)
 
+  /**
+   * Create a seperate `JSON` file for each file belonging to the collection  
+   */
+  Promise.all(collectionItemsData.map(
+    function (itemData) {
+      return generateEntryJsonFile(itemData, collectionType);
+    }
+  ));
+
+  /**
+   * Create a `JSON` file that includes the data from all the files belonging to the collection  
+   */
+  generateCollectionJsonFile(collectionItemsData, collectionType)
+
+  // return promisify(fs.writeFile)(
+  //   `./static/data/${itemType}.json`,
+  //   JSON.stringify(itemsData)
+  // )  
+}
+
+function generateEntryJsonFile(itemData, itemType) {
+  return jetpack.write(`./static/data/${itemType}/${itemData.name}.json`, itemData);
+}
+
+function generateCollectionJsonFile(collectionData, collectionType) {
+  return jetpack.write(`./static/data/${collectionType}.json`, collectionData);
+}
+
+function titleize(slug) {
+  const words = slug.split('-')
+  return words
+    .map(word => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
+    .join(' ')
+}

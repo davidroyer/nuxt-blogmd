@@ -1,5 +1,5 @@
 const { promisify } = require('util')
-const md = require('./markdown')
+const md = require('../modules/markdown')
 const fs = require('fs')
 const writeFile = promisify(fs.writeFile)
 const readFile = promisify(fs.readFile)
@@ -19,11 +19,11 @@ module.exports = (data, itemType) => {
   }))
   
   Promise.all(itemsData.map(
-    function(itemData) { return generateJSONFile(itemData, itemType); }
+    function(itemData) { return generateJsonFile(itemData, itemType); }
   ));
 
 
-  // Promise.all(itemsData.map(generateJSONFile))
+  // Promise.all(itemsData.map(generateJsonFile))
   return promisify(fs.writeFile)(
     `./static/data/${itemType}.json`,
     JSON.stringify(itemsData)
@@ -31,7 +31,7 @@ module.exports = (data, itemType) => {
 }
 
 
-function generateJSONFile(itemData, itemType) {
+function generateJsonFile(itemData, itemType) {
   return jetpack.write(`./static/data/${itemType}/${itemData.name}.json`, itemData);
 }
 
